@@ -4,6 +4,15 @@ import io.bootify.practica_spring_batch2.model.TransaccionDTO;
 import io.bootify.practica_spring_batch2.service.TransaccionService;
 import io.bootify.practica_spring_batch2.util.WebUtils;
 import jakarta.validation.Valid;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +29,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TransaccionController {
 
     private final TransaccionService transaccionService;
+
+    @Autowired
+    private JobLauncher jobLauncher;
+
+    @Autowired
+    private Job job;
 
     public TransaccionController(final TransaccionService transaccionService) {
         this.transaccionService = transaccionService;
@@ -71,6 +86,19 @@ public class TransaccionController {
         transaccionService.delete(id);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("transaccion.delete.success"));
         return "redirect:/transaccions";
+    }
+
+    @PostMapping("/importTransacciones")
+    public void importCsvToDBPracticaSpringBatch(){
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+        try {
+            jobLauncher.run(job, jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobParametersInvalidException |
+                 JobInstanceAlreadyCompleteException | JobRestartException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

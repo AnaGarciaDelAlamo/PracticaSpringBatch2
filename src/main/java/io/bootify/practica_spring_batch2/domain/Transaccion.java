@@ -10,6 +10,8 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,10 +20,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 @Entity
-@Table(name = "Transaccions")
+@Table(name = "transaccions")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
+@Data
 public class Transaccion {
 
     @Id
@@ -36,21 +39,22 @@ public class Transaccion {
             strategy = GenerationType.SEQUENCE,
             generator = "primary_sequence"
     )
+
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
 
-    @Column(nullable = false)
+    @Column(name= "monto",nullable = false)
     private Double monto;
 
-    @Column(nullable = false)
+    @Column(name = "tipoTransaccion",nullable = false)
     private String tipoTransaccion;
 
-    @Column(nullable = false)
+    @Column(name = "cuentaOrigen", nullable = false)
     private String cuentaOrigen;
 
-    @Column(nullable = false)
+    @Column(name = "cuentaDestino", nullable = false)
     private String cuentaDestino;
 
     @CreatedDate
