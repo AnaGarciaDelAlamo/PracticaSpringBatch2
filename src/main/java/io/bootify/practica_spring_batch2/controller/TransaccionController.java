@@ -30,11 +30,11 @@ public class TransaccionController {
 
     private final TransaccionService transaccionService;
 
-    @Autowired
+    /*@Autowired
     private JobLauncher jobLauncher;
 
     @Autowired
-    private Job job;
+    private Job job;*/
 
     public TransaccionController(final TransaccionService transaccionService) {
         this.transaccionService = transaccionService;
@@ -88,7 +88,7 @@ public class TransaccionController {
         return "redirect:/transaccions";
     }
 
-    @PostMapping("/importTransacciones")
+    /*@PostMapping("/importTransacciones")
     public void importCsvToDBPracticaSpringBatch(){
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
@@ -99,6 +99,6 @@ public class TransaccionController {
             throw new RuntimeException(e);
         }
 
-    }
+    }*/
 
 }

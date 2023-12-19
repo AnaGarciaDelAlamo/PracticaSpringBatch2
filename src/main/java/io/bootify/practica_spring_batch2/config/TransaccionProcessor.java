@@ -5,7 +5,7 @@ import org.springframework.batch.item.ItemProcessor;
 
 public class TransaccionProcessor implements ItemProcessor<Transaccion, Transaccion> {
     @Override
-    public Transaccion process(Transaccion transaccion) throws Exception {
+    public Transaccion process(final Transaccion transaccion) throws Exception {
         return transaccion;
     }
 }

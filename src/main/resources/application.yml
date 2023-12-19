@@ -1,12 +1,7 @@
 spring:
-  batch:
-    job:
-      enabled: false
-    jdbc:
-      initialize-schema: always
-
   datasource:
-    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/PracticaSpringBatch2}
+    driver-class-name: org.postgresql.Driver
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/springbatch}
     username: ${JDBC_DATABASE_USERNAME:postgres}
     password: ${JDBC_DATABASE_PASSWORD:root}
     dbcp2:
@@ -24,6 +19,9 @@ spring:
             non_contextual_creation: true
         id:
           new_generator_mappings: true
+        show_sql: true
+        generate-ddl: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   mvc:
     format:
       date: yyyy-MM-dd
@@ -32,6 +30,12 @@ spring:
   docker:
     compose:
       lifecycle-management: start-only
+  batch:
+    job:
+      enabled: true
+    jdbc:
+      initialize-schema: always
 springdoc:
   pathsToMatch: /api/**
-
+server:
+  port: 8080

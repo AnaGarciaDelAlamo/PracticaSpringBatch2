@@ -10,7 +10,6 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
