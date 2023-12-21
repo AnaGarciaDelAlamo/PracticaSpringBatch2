@@ -14,7 +14,7 @@ public class CsvGeneratorController {
     @GetMapping("/generate-csv")
     public String generateCsv() {
         String csvFilePath = "transacciones.csv";
-        int numberOfTransactions = 1000;
+        int numberOfTransactions = 10000;
         csvGeneratorService.generateCsv(csvFilePath, numberOfTransactions);
         return "Archivo CSV generado con éxito.";
     }

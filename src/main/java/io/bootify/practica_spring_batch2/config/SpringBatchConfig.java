@@ -26,7 +26,6 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -127,7 +126,7 @@ public class SpringBatchConfig {
     @Bean
     public Step step1(ItemReader<Transaccion> reader, ItemProcessor<Transaccion, Transaccion> processor, ItemWriter<Transaccion> writer) {
         return new StepBuilder("csv-step", jobRepository)
-                .<Transaccion, Transaccion>chunk(10, transactionManager)
+                .<Transaccion, Transaccion>chunk(5000, transactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
