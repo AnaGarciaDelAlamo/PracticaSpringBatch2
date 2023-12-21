@@ -25,8 +25,11 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 
 @Configuration
 @EnableBatchProcessing
@@ -61,7 +64,7 @@ public class SpringBatchConfig {
         lineTokenizer.setNames("id", "fecha", "monto", "tipoTransaccion", "cuentaOrigen", "cuentaDestino");
 
         lineMapper.setLineTokenizer(lineTokenizer);
-        lineMapper.setFieldSetMapper(new CustomFieldSetMapper()); // Utilizar el nuevo FieldSetMapper personalizado
+        lineMapper.setFieldSetMapper(new CustomFieldSetMapper());
         return lineMapper;
     }
 
@@ -70,18 +73,41 @@ public class SpringBatchConfig {
         @Override
         public Transaccion mapFieldSet(FieldSet fieldSet) {
             Transaccion transaccion = new Transaccion();
-            Long idValue = fieldSet.readLong("id");
+            Long idValue = readLongOrNull(fieldSet, "id");
             transaccion.setId(idValue != null ? idValue : 0L);
-            transaccion.setFecha(fieldSet.readDate("fecha", "yyyy-MM-dd").toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-            transaccion.setMonto(fieldSet.readDouble("monto"));
+
+            Date fechaValue = fieldSet.readDate("fecha", "yyyy-MM-dd");
+            transaccion.setFecha(fechaValue != null ? fechaValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() : null);
+
+            Double montoValue = readDoubleOrNull(fieldSet, "monto");
+            transaccion.setMonto(montoValue != null ? montoValue : 0.0);
+
             transaccion.setTipoTransaccion(fieldSet.readString("tipoTransaccion"));
             transaccion.setCuentaOrigen(fieldSet.readString("cuentaOrigen"));
             transaccion.setCuentaDestino(fieldSet.readString("cuentaDestino"));
             transaccion.setDateCreated(OffsetDateTime.now());
             transaccion.setLastUpdated(OffsetDateTime.now());
+
             return transaccion;
         }
+
+        private Long readLongOrNull(FieldSet fieldSet, String fieldName) {
+            try {
+                return fieldSet.readLong(fieldName);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
+        private Double readDoubleOrNull(FieldSet fieldSet, String fieldName) {
+            try {
+                return fieldSet.readDouble(fieldName);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
     }
+
 
 
 
